@@ -6,3 +6,4 @@
 2. `pnpm i`
 3. Create a GitHub app for testing and place the variables in apps/web/.env (see the example file for assistance)
 4. `pnpm dev` to run the app
+5. `pnpm dev:docs` to run the docs
