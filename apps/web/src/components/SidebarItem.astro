@@ -1,0 +1,33 @@
+---
+import { Icon } from 'astro-icon/components'
+import type { Group, Item } from '../lib/sidebar'
+
+interface Props {
+	item: Item | Group
+}
+
+const { item } = Astro.props
+---
+
+{
+	'items' in item ? (
+    <details open={item.active} class="[&_summary]:open:text-zinc-900 [&_.arrow]:open:rotate-90">
+      <summary class={`flex items-center gap-3 rounded-lg px-3 py-2 cursor-pointer transition-colors dark:hover:text-zinc-50 ${item.active ? 'dark:bg-zinc-700/40 text-zinc-900 dark:text-white' : 'hover:text-zinc-900 text-zinc-500 dark:text-zinc-400'}`}>
+        <Icon name={item.icon} class="w-5 h-5"/>
+        {item.title}
+        <Icon name="material-symbols:arrow-right-rounded" class="arrow w-5 h-5 ml-auto transition-transform"/>
+      </summary>
+      <div class="ml-4">
+        {item.items.map(item => <Astro.self {item} />)}
+      </div>
+    </details>
+	) : (
+		<a
+			class={`flex items-center gap-3 rounded-lg px-3 py-2 transition-colors dark:hover:text-zinc-50 ${item.active ? 'dark:bg-zinc-700/40 bg-zinc-200/40 text-zinc-900 dark:text-white' : 'hover:text-zinc-900 text-zinc-500 dark:text-zinc-400'}`}
+			href={item.href}
+		>
+			<Icon name={item.icon} class="w-5 h-5"/>
+			{item.title}
+		</a>
+	)
+}

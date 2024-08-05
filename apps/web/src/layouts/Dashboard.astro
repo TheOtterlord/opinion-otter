@@ -1,0 +1,36 @@
+---
+import Base from '../layouts/Base.astro'
+import Sidebar from '../components/Sidebar.astro'
+import { getSidebar } from '../lib/sidebar'
+
+interface Props {
+  title: string
+}
+
+const {
+  title
+} = Astro.props
+
+const projects = (Astro.locals.projects ?? []).map(project => ({
+  value: project.id,
+  label: project.title
+}))
+
+projects.push({
+  label: 'Create new project',
+  value: 'create'
+})
+
+const items = getSidebar(Astro)
+---
+
+<Base title={title} description="" image="" imageAlt="">
+  <div class="grid h-screen min-h-screen w-full overflow-hidden lg:grid-cols-[280px_1fr]">
+    <Sidebar {items} {projects} icon="material-symbols:rocket-launch-rounded"/>
+    <div class="flex flex-col overflow-auto">
+      <main class="flex flex-1 flex-col gap-4 p-4 md:gap-8 md:p-6">
+        <slot/>
+      </main>
+    </div>
+  </div>
+</Base>

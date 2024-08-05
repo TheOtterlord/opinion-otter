@@ -1,0 +1,12 @@
+packages:
+  - "packages/*"
+  - "apps/*"
+
+catalog:
+  "@astrojs/starlight": ^0.25.3
+  "@astrojs/check": ^0.8.3
+  "@astrojs/db": ^0.12.0
+  astro: ^4.12.2
+  astro-icon: ^1.1.0
+  sharp: ^0.33.4
+  typescript: ^5.5.4

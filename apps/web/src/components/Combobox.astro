@@ -1,0 +1,53 @@
+---
+export interface Item {
+  value: string
+  label: string
+}
+
+interface Props {
+  key: 'tag' | 'state'
+  items: Item[]
+  link?: boolean
+}
+
+const {
+  key,
+  items,
+  link = true
+} = Astro.props
+---
+
+<div class="pb-4">
+  <astro-combobox data-link={link ? 'true' : 'false'} data-key={key}>
+    <select class="appearance-none flex h-10 w-full items-center justify-between rounded-md border border-input bg-zinc-100 px-6 py-1 text-sm font-semibold focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 dark:bg-zinc-900 dark:text-white dark:border-zinc-800 dark:ring-offset-zinc-800">
+      {
+        items.map(({value, label}) => (
+          <option {value}>{label}</option>
+        ))
+      }
+    </select>
+  </astro-combobox>
+</div>
+
+<script>
+  class Combobox extends HTMLElement {
+    constructor() {
+      super()
+
+      const select = this.firstElementChild as HTMLSelectElement
+
+      if (this.dataset.link) {
+        select.addEventListener('input', () => {
+          const url = new URL(window.location.href)
+          url.searchParams.set(this.dataset.key!, select.options[select.selectedIndex].value || '')
+          window.location.href = url.href
+        })
+      }
+
+      // fixes back navigation behaviour
+      select.value = (select.querySelector(`option[value='${new URL(window.location.href).searchParams.get(this.dataset.key!)}']`) as HTMLOptionElement).value
+    }
+  }
+
+  customElements.define('astro-combobox', Combobox)
+</script>

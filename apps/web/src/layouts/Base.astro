@@ -1,0 +1,58 @@
+---
+import './base.css'
+
+interface Props {
+  title: string
+  description: string
+  image: string
+  imageAlt: string
+  canonical?: string
+  index?: boolean
+}
+
+const {
+  title,
+  description,
+  image,
+  imageAlt,
+  canonical = Astro.url.toString(),
+  index = true
+} = Astro.props
+---
+
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width">
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg">
+    <title>{title}</title>
+
+    { !index && <meta name="robots" content="noindex"> }
+
+    <meta name="generator" content={Astro.generator}>
+    <link rel="canonical" href={canonical}>
+    <link rel="sitemap" href="/sitemap-index.xml">
+
+    {/* OpenGraph Tags */}
+    <meta property="og:url" content={Astro.url}>
+    <meta property="og:title" content={title}>
+    <meta property="og:locale" content="en">
+    <meta property="og:description" content={description}>
+    <meta property="og:image" content={image}>
+    <meta property="og:image:alt" content={imageAlt}>
+    <meta property="og:type" content="website">
+
+    {/* Twitter Tags */}
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:site" content="">
+    <meta name="twitter:creator" content="">
+    <meta name="twitter:title" content={title}>
+    <meta name="twitter:description" content={description}>
+    <meta name="twitter:image" content={image}>
+    <meta name="twitter:image:alt" content={imageAlt}>
+  </head>
+
+  <body class="dark:bg-black dark:text-zinc-300">
+    <slot/>
+  </body>
+</html>

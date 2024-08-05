@@ -1,0 +1,98 @@
+---
+import Dashboard from '../../layouts/Dashboard.astro'
+import Submission from '../../components/Submission.astro'
+import { createProject, getProject } from '../../lib/projects'
+import Combobox from '../../components/Combobox.astro'
+import { db, __opinionotter__Tag, type __opinionotter__Submission } from 'astro:db'
+
+const { session, user } = Astro.locals
+
+if (!session || !user) return Astro.redirect('/signin/github')
+
+let [project, tags] = await Promise.allSettled([
+	getProject(Astro.params.id!, Astro),
+	db.select().from(__opinionotter__Tag).all(),
+])
+
+if (project.status === 'rejected' || !project.value) {
+	;[project, tags] = await Promise.allSettled([
+		createProject({
+			owner: user.id,
+			title: '',
+		}),
+		db
+			.insert(__opinionotter__Tag)
+			.values([
+				{
+					label: 'Issue',
+          slug: 'issue',
+					createdAt: Date.now(),
+					project: '',
+				},
+				{
+					label: 'Idea',
+          slug: 'idea',
+					createdAt: Date.now(),
+					project: '',
+				},
+				{
+					label: 'Other',
+          slug: 'other',
+					createdAt: Date.now(),
+					project: '',
+				},
+			])
+			.returning(),
+	])
+
+	// TODO: handle error
+	if (project.status === 'rejected') return Astro.redirect('/')
+}
+
+// TODO: add some sort of invite screen/system?
+if (
+	user.id !== project.value?.owner &&
+	(project.value?.team as string[]).includes(user.id)
+)
+	return Astro.redirect('/')
+
+const submissions = project.value!
+	.submissions as (typeof __opinionotter__Submission.$inferSelect)[]
+---
+
+<Dashboard title="Projects">
+	<div class="mx-auto max-w-4xl w-full px-4 flex flex-col gap-4">
+		<h1 class="text-4xl font-bold my-4">{project.value?.title}</h1>
+		<div class="flex justify-end gap-4">
+			<Combobox
+				key="tag"
+				items={[{ value: '', label: 'All' }].concat((tags.status === 'fulfilled' ? tags.value : []).map(t => ({
+					value: t.slug,
+					label: t.label,
+				})))}
+			/>
+			<Combobox
+				key="state"
+				items={[
+					{
+						value: 'open',
+						label: 'Open',
+					},
+					{
+						value: 'closed',
+						label: 'Closed',
+					},
+				]}
+			/>
+		</div>
+		{
+			submissions.length !== 0 ? (
+				submissions.map(submission => <Submission tags={tags.status === 'fulfilled' ? tags.value : []} {submission} />)
+			) : (
+				<p class="text-center py-4 text-zinc-700 dark:text-zinc-400 font-semibold">
+					No submissions
+				</p>
+			)
+		}
+	</div>
+</Dashboard>

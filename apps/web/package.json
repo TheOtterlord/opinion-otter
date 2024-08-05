@@ -1,0 +1,31 @@
+{
+  "name": "web",
+  "type": "module",
+  "version": "0.0.1",
+  "scripts": {
+    "dev": "astro dev",
+    "start": "astro dev",
+    "build": "astro build --remote",
+    "preview": "astro preview",
+    "astro": "astro"
+  },
+  "dependencies": {
+    "@astrojs/check": "catalog:",
+    "@astrojs/db": "catalog:",
+    "@astrojs/starlight": "catalog:",
+    "@astrojs/node": "^8.3.2",
+    "@astrojs/tailwind": "^5.1.0",
+    "@iconify-json/material-symbols": "^1.1.85",
+    "@lucia-auth/adapter-drizzle": "^1.0.7",
+    "arctic": "^1.9.2",
+    "astro": "catalog:",
+    "astro-icon": "^1.1.0",
+    "lucia": "^3.2.0",
+    "micromatch": "^4.0.7",
+    "tailwindcss": "^3.4.7",
+    "typescript": "^5.5.4"
+  },
+  "devDependencies": {
+    "@types/micromatch": "4.0.9"
+  }
+}
